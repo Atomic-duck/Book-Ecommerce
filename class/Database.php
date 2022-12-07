@@ -87,7 +87,7 @@ class Book extends DB {
                     $pre_img = $book['pdt_img'];
                     unlink("uploads/".$pre_img);
 
-                    $query = "UPDATE book SET title='$book_title', price= $book_price, description='$book_des',`image`='$book_img_name', display=$book_display, stock=$book_stock, author='book_author' WHERE id=$book_id";
+                    $query = "UPDATE book SET title='$book_title', price= $book_price, description='$book_des',`image`='$book_img_name', display=$book_display, stock=$book_stock, author='$book_author' WHERE id=$book_id";
 
                     if (mysqli_query($this->conn, $query)) {
                         move_uploaded_file($book_img_tmp, "uploads/".$book_img_name);
@@ -612,7 +612,7 @@ class Order extends DB{
 }
 
 class Cart extends DB{
-
+    
 }
 
 class 
