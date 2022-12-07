@@ -24,6 +24,7 @@ class Book extends DB {
         $book_img = $data['image'];
         $book_display = $data['display'];
         $book_stock = $data['stock'];
+        $book_author = $data['author'];
         //
         $book_img_name = $_FILES['book_img']['name'];
         $book_img_size = $_FILES['book_img']['size'];
@@ -35,7 +36,7 @@ class Book extends DB {
         if ($img_ext == "jpg" ||  $img_ext == 'jpeg' || $img_ext == "png") {
             if ($book_img_size <= 2e+6) {
                 if($width<271 && $height<271){
-                    $query = "INSERT INTO book(title, price, description, image, display, stock) VALUES('$book_title', '$book_price', '$book_des', '$book_img_name', $book_display, $book_stock)";
+                    $query = "INSERT INTO book(title, price, description, image, display, stock, author) VALUES('$book_title', '$book_price', '$book_des', '$book_img_name', $book_display, $book_stock, '$book_author')";
 
                     if (mysqli_query($this->conn, $query)) {
                         move_uploaded_file($book_img_tmp, "uploads/".$book_img_name);
@@ -65,6 +66,8 @@ class Book extends DB {
         $book_des = $data['des'];
         $book_img = $data['image'];
         $book_display = $data['display'];
+        $book_stock = $data['stock'];
+        $book_author = $data['author'];
         //
         $book_img_name = $_FILES['book_img']['name'];
         $book_img_size = $_FILES['book_img']['size'];
@@ -84,7 +87,7 @@ class Book extends DB {
                     $pre_img = $book['pdt_img'];
                     unlink("uploads/".$pre_img);
 
-                    $query = "UPDATE book SET title='$book_title', price= $book_price, description='$book_des',`image`='$book_img_name', display=$book_display WHERE id=$book_id";
+                    $query = "UPDATE book SET title='$book_title', price= $book_price, description='$book_des',`image`='$book_img_name', display=$book_display, stock=$book_stock, author='book_author' WHERE id=$book_id";
 
                     if (mysqli_query($this->conn, $query)) {
                         move_uploaded_file($book_img_tmp, "uploads/".$book_img_name);
@@ -432,6 +435,110 @@ class Customer extends DB{
     }
 }
 
+class Comment extends DB{
+    function getBookComment($book_id){
+        $query = "SELECT * FROM comments WHERE book_id=$book_id";
+        
+        if ($result = mysqli_query($this->conn, $query)) {
+            $comment_datas = array();
+            while($row = mysqli_fetch_assoc($result)){
+                $comment_datas[] = $row;
+            }
+
+            return $comment_datas;
+        }
+    }
+
+    function getCommentById($cmt_id){
+        $query = "SELECT * FROM comments WHERE id=$cmt_id";
+        $result = mysqli_query($this->conn, $query);
+        
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
+    function postComment($data){
+        $customer_id = $data['customer_id'];
+        $username = $data['username'];
+        $book_id = $data['book_id'];
+        $comment =  $data['comment'];
+
+        $query = "INSERT INTO comments(customer_id, book_id , username, comment) VALUES ($customer_id, $book_id,'$username','$comment')";
+        
+        if(mysqli_query($this->conn, $query)){
+            $msg = "Thanks for your valuable feedback";
+            return $msg;
+        }
+    }
+
+    function updateComment($data){
+        $cmt_id = $data['cmt_id'];
+        $comment = $data['comment'];
+        $query = "UPDATE comments SET comment='$comment' WHERE id=$cmt_id";
+        if(mysqli_query($this->conn, $query)){
+            $updata_msg = "Comment updated successfully";
+            return $updata_msg;
+        }
+    }
+
+    function delete_comment($cmt_id){
+        $query = "DELETE FROM comments WHERE id=$cmt_id";
+
+        if(mysqli_query($this->conn, $query)){
+            $del_msg = "Comment deleted successfully";
+            return $del_msg;
+        }
+    }
+}
+
+class Discount extends DB{
+    function addDiscount($data){
+        $name = $data['name'];
+        $description = $data['description'];
+        $percent = $data['percent'];
+        $active = $data['active'];
+
+        $query = "INSERT INTO discount(name, description, discount_percent, active) VALUES ('$name','$description',$percent,$active)";
+
+        if(mysqli_query($this->conn, $query)){            
+            $add_msg = "Added successfully";
+            return $add_msg;
+        }
+    }
+
+    function getDiscount(){
+        $query = "SELECT * FROM discount";
+        if($result = mysqli_query($this->conn, $query)){
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
+    function updateDiscount($data){
+        $id = $data['discount_id']
+        $name = $data['name'];
+        $description = $data['description'];
+        $percent = $data['percent'];
+        $active = $data['active'];
+
+        $query = "UPDATE discount SET name='$name', description='$description', percent=$percent, active=$active WHERE id=$id";
+        if(mysqli_query($this->conn, $query)){            
+            $add_msg = "Updated successfully";
+            return $add_msg;
+        }
+    }
+
+    function deleteDiscount($discount_id){
+        $query = "DELETE FROM discount WHERE id = $discount_id";
+        if(mysqli_query($this->conn, $query)){
+            $add_msg = "Coupon deleted successfully";
+            return $add_msg;
+        }
+    }
+}
+
 class Order extends DB{
     //order
     // ko tru book stock
@@ -504,103 +611,20 @@ class Order extends DB{
     // }
 }
 
-class Comment extends DB{
-    function getBookComment($book_id){
-        $query = "SELECT * FROM comments WHERE book_id=$book_id";
-        
-        if ($result = mysqli_query($this->conn, $query)) {
-            $comment_datas = array();
-            while($row = mysqli_fetch_assoc($result)){
-                $comment_datas[] = $row;
-            }
+class Cart extends DB{
 
-            return $comment_datas;
-        }
-    }
-
-    function getCommentById($cmt_id){
-        $query = "SELECT * FROM comments WHERE id=$cmt_id";
-        $result = mysqli_query($this->conn, $query);
-        
-        if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            return $row;
-        }
-    }
-
-    function postComment($data){
-        $customer_id = $data['customer_id'];
-        $username = $data['username'];
-        $book_id = $data['book_id'];
-        $comment =  $data['comment'];
-
-        $query = "INSERT INTO comments(customer_id, book_id , username, comment) VALUES ($customer_id, $book_id,'$username','$comment')";
-        
-        if(mysqli_query($this->conn, $query)){
-            $msg = "Thanks for your valuable feedback";
-            return $msg;
-        }
-    }
-
-    function updateComment($data){
-        $cmt_id = $data['cmt_id'];
-        $comment = $data['comment'];
-        $query = "UPDATE comments SET comment='$comment' WHERE id=$cmt_id";
-        if(mysqli_query($this->conn, $query)){
-            $updata_msg = "Comment updated successfully";
-            return $updata_msg;
-        }
-    }
-
-    function delete_comment($cmt_id){
-        $query = "DELETE FROM comments WHERE id=$cmt_id";
-
-        if(mysqli_query($this->conn, $query)){
-            $del_msg = "Comment deleted successfully";
-            return $del_msg;
-        }
-    }
 }
 
-class Discount extends DB{
-    function addDiscount($data){
-        $name = $data['name'];
-        $description = $data['description'];
-        $percent = $data['percent'];
-        $active = $data['active'];
+class 
 
-        $query = "INSERT INTO discount(name, description, discount_percent, active) VALUES ('$name','$description',$percent,$active)";
+// test
+// $book_obj = new Book();
+// $admin_obj = new Admin();
 
-        if(mysqli_query($this->conn, $query)){            
-            $add_msg = "Coupon added successfully";
-            return $add_msg;
-        }
-    }
+// $admins = $admin_obj->getAllAdmin();
+// $books = $book_obj->getAllBook();
 
-    function getDiscount(){
-        $query = "SELECT * FROM discount";
-        if($result = mysqli_query($this->conn, $query)){
-            $row = mysqli_fetch_assoc($result);
-            return $row;
-        }
-    }
-
-    function deleteDiscount($discount_id){
-        $query = "DELETE FROM discount WHERE id = $discount_id";
-        if(mysqli_query($this->conn, $query)){
-            $add_msg = "Coupon deleted successfully";
-            return $add_msg;
-        }
-    }
-}
-
-$book_obj = new Book();
-$admin_obj = new Admin();
-
-$admins = $admin_obj->getAllAdmin();
-$books = $book_obj->getAllBook();
-
-$title = $books[0]["title"];
-echo $title;
-echo $admins[0]["email"];
+// $title = $books[0]["title"];
+// echo $title;
+// echo $admins[0]["email"];
 ?>
