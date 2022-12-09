@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 07, 2022 at 05:54 PM
--- Server version: 10.4.25-MariaDB
+-- Generation Time: Dec 09, 2022 at 03:59 PM
+-- Server version: 8.0.31
 -- PHP Version: 7.4.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -24,15 +24,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `add_logo`
+--
+
+CREATE TABLE `add_logo` (
+  `id` int NOT NULL,
+  `img` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `add_logo`
+--
+
+INSERT INTO `add_logo` (`id`, `img`) VALUES
+(1, 'logo.png');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `admin`
 --
 
 CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `password` varchar(61) NOT NULL,
-  `role` int(11) NOT NULL DEFAULT 1,
+  `role` int NOT NULL DEFAULT '1',
   `email` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `admin`
@@ -49,9 +67,9 @@ INSERT INTO `admin` (`id`, `password`, `role`, `email`) VALUES
 --
 
 CREATE TABLE `book` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `title` varchar(200) NOT NULL,
-  `price` int(5) NOT NULL,
+  `price` int NOT NULL,
   `description` text NOT NULL,
   `image` varchar(40) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -101,13 +119,14 @@ INSERT INTO `book` (`id`, `title`, `price`, `description`, `image`, `created_at`
 --
 
 CREATE TABLE `cart_item` (
-  `id` int(11) NOT NULL,
-  `session_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `quantity` int(10) UNSIGNED NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `modified_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` int NOT NULL,
+  `session_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  `quantity` int UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `price` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -139,22 +158,22 @@ INSERT INTO `category` (`id`, `name`, `display`) VALUES
 --
 
 CREATE TABLE `comments` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `customer_id` int NOT NULL,
+  `book_id` int NOT NULL,
   `username` varchar(255) NOT NULL,
   `comment` varchar(255) NOT NULL,
-  `comment_date` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `comment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `comments`
 --
 
 INSERT INTO `comments` (`id`, `customer_id`, `book_id`, `username`, `comment`, `comment_date`) VALUES
-(1, 1, 28, 'khabanh:mk:1234567', 'amazing good job', '2022-12-07'),
-(2, 1, 36, 'khabanh:mk:1234567', 'cung dc', '2023-12-01'),
-(3, 1, 26, 'khabanh:mk:1234567', 'good good', '2022-12-07');
+(1, 1, 28, 'khabanh:mk:1234567', 'amazing good job', '2022-12-07 00:00:00'),
+(2, 1, 36, 'khabanh:mk:1234567', 'cung dc', '2023-12-01 00:00:00'),
+(3, 1, 26, 'khabanh:mk:1234567', 'good good', '2022-12-07 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -163,16 +182,16 @@ INSERT INTO `comments` (`id`, `customer_id`, `book_id`, `username`, `comment`, `
 --
 
 CREATE TABLE `customer` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `username` varchar(60) NOT NULL,
   `firstname` varchar(60) NOT NULL,
   `lastname` varchar(60) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(25) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `modified_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `email` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `customer`
@@ -188,14 +207,14 @@ INSERT INTO `customer` (`id`, `username`, `firstname`, `lastname`, `password`, `
 --
 
 CREATE TABLE `discount` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `name` varchar(30) NOT NULL,
-  `description` text DEFAULT NULL,
+  `description` text,
   `discount_percent` decimal(3,2) UNSIGNED DEFAULT NULL,
-  `active` tinyint(1) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `modified_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `discount`
@@ -208,12 +227,34 @@ INSERT INTO `discount` (`id`, `name`, `description`, `discount_percent`, `active
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `header_info`
+--
+
+CREATE TABLE `header_info` (
+  `id` int NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `tweeter` varchar(500) NOT NULL,
+  `fb_link` varchar(500) NOT NULL,
+  `pinterest` varchar(500) NOT NULL,
+  `phone` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `header_info`
+--
+
+INSERT INTO `header_info` (`id`, `email`, `tweeter`, `fb_link`, `pinterest`, `phone`) VALUES
+(1, 'bku@gmail.com', 'https://twitter.com/', 'https://facebook.com/', 'https://pinerest.com/', '0123456789');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `order_details`
 --
 
 CREATE TABLE `order_details` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `customer_id` int NOT NULL,
   `total` decimal(10,0) DEFAULT NULL,
   `payment_id` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
@@ -229,14 +270,14 @@ CREATE TABLE `order_details` (
 --
 
 CREATE TABLE `order_items` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `quantity` int(10) UNSIGNED NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `modified_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id` int NOT NULL,
+  `order_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  `quantity` int UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -245,12 +286,12 @@ CREATE TABLE `order_items` (
 --
 
 CREATE TABLE `payment_details` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `order_id` int NOT NULL,
   `amount` decimal(10,0) DEFAULT NULL,
   `provider` varchar(30) DEFAULT NULL,
-  `paid` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `paid` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -259,8 +300,8 @@ CREATE TABLE `payment_details` (
 --
 
 CREATE TABLE `shopping_session` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `customer_id` int NOT NULL,
   `total` decimal(10,0) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `modified_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -335,8 +376,26 @@ INSERT INTO `slider` (`id`, `first_line`, `second_line`, `third_line`, `btn_left
 -- --------------------------------------------------------
 
 --
+-- Dumping data for table `slider`
+--
+
+INSERT INTO `slider` (`id`, `first_line`, `second_line`, `third_line`, `btn_left`, `btn_right`, `slider_img`) VALUES
+(1, 'Book-Ecommerce', 'Welcome to Book-Ecommerce', 'Book is the best friend', 'Shop now', 'HomePage', 'slide-01.jpg'),
+(2, 'Book-Ecommerce', 'Welcome to Book-Ecommerce', 'Book is the best friend', 'Shop now', 'HomePage', 'slide-02.jpg'),
+(3, 'Book-Ecommerce', 'Welcome to Book-Ecommerce', 'Book is the best friend', 'Shop now', 'HomePage', 'slide-01.jpg'),
+(4, 'Book-Ecommerce', 'Welcome to Book-Ecommerce', 'Book is the best friend', 'Shop now', 'HomePage', 'slide-02.jpg');
+
+-- --------------------------------------------------------
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `add_logo`
+--
+ALTER TABLE `add_logo`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `admin`
@@ -372,7 +431,6 @@ ALTER TABLE `category`
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `book_id` (`book_id`),
   ADD KEY `customer_id` (`customer_id`);
 
@@ -388,6 +446,12 @@ ALTER TABLE `customer`
 -- Indexes for table `discount`
 --
 ALTER TABLE `discount`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `header_info`
+--
+ALTER TABLE `header_info`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -418,6 +482,7 @@ ALTER TABLE `payment_details`
 --
 ALTER TABLE `shopping_session`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `customer_id_2` (`customer_id`),
   ADD KEY `customer_id` (`customer_id`);
 
 --
@@ -439,16 +504,22 @@ ALTER TABLE `link_info`
 --
 
 --
+-- AUTO_INCREMENT for table `add_logo`
+--
+ALTER TABLE `add_logo`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `book`
 --
 ALTER TABLE `book`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `book`
@@ -472,31 +543,37 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `discount`
 --
 ALTER TABLE `discount`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `header_info`
+--
+ALTER TABLE `header_info`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payment_details`
 --
 ALTER TABLE `payment_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `shopping_session`
@@ -533,41 +610,14 @@ ALTER TABLE `book`
 -- Constraints for table `cart_item`
 --
 ALTER TABLE `cart_item`
-  ADD CONSTRAINT `cart_item_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `cart_item_ibfk_2` FOREIGN KEY (`session_id`) REFERENCES `shopping_session` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `cart_item_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `shopping_session` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `comments`
 --
 ALTER TABLE `comments`
-  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `order_details`
---
-ALTER TABLE `order_details`
-  ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`payment_id`) REFERENCES `payment_details` (`id`),
-  ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`);
-
---
--- Constraints for table `order_items`
---
-ALTER TABLE `order_items`
-  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
-  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `order_details` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `payment_details`
---
-ALTER TABLE `payment_details`
-  ADD CONSTRAINT `payment_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order_details` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `shopping_session`
---
-ALTER TABLE `shopping_session`
-  ADD CONSTRAINT `shopping_session_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
