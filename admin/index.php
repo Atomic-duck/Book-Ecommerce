@@ -1,8 +1,8 @@
 <?php
-include("class/adminback.php");
-$obj = new adminback();
+include("../class/Database.php");
+$obj = new Admin();
 if (isset($_POST['admin_btn'])) {
-    $log_msg = $obj->admin_login($_POST);
+    $log_msg = $obj->adminLogin($_POST);
 }
 session_start();
 if (isset($_SESSION['admin_id'])) {
@@ -38,11 +38,11 @@ include("includes/head.php")
                                 </div>
                                 <hr />
                                 <div class="input-group">
-                                    <input type="email" class="form-control" placeholder="Email" name="admin_email">
+                                    <input type="email" class="form-control" placeholder="Email" name="email">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Password" name="admin_pass">
+                                    <input type="password" class="form-control" placeholder="Password" name="password">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="row m-t-25 text-left">

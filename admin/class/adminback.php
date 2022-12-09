@@ -8,7 +8,7 @@ class adminback
         $dbhost = "localhost";
         $dbuser = "root";
         $dbpass = "";
-        $dbname = "ecommerce";
+        $dbname = "book_ecommerce";
         $this->connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
         if (!$this->connection) {
             die("Databse connection error!!!");
@@ -17,17 +17,17 @@ class adminback
 
     function admin_login($data)
     {
-        $admin_email = $data["admin_email"];
-        $admin_pass = md5($data['admin_pass']);
-        $query = "SELECT * FROM `admin_info` WHERE admin_email = '$admin_email' AND admin_pass = '$admin_pass'";
+        $email = $data["email"];
+        $password = md5($data['password']);
+        $query = "SELECT * FROM `admin` WHERE email = '$email' AND password = '$password'";
         if (mysqli_query($this->connection, $query)) {
             $result = mysqli_query($this->connection, $query);
             $admin_info = mysqli_fetch_assoc($result);
             if ($admin_info) {
-                header("location:dashborad.php");
+                header("location:dashboard.php");
                 session_start();
                 $_SESSION['admin_id'] = $admin_info['admin_id'];
-                $_SESSION['admin_email'] = $admin_info['admin_email'];
+                $_SESSION['admin_email'] = $admin_info['email'];
                 $_SESSION['role'] = $admin_info['role'];
             } else {
                 $log_msg = "Email or password wrong";
@@ -39,7 +39,7 @@ class adminback
     function admin_logout()
     {
         unset($_SESSION['admin_id']);
-        unset($_SESSION['admin_email']);
+        unset($_SESSION['email']);
         unset($_SESSION['role']);
         header("location:index.php");
         session_destroy();
@@ -47,7 +47,7 @@ class adminback
 
     function admin_password_recover($recover_email)
     {
-        $query = "SELECT * FROM `admin_info` WHERE `admin_email`='$recover_email'";
+        $query = "SELECT * FROM `admin` WHERE `email`='$recover_email'";
         if (mysqli_query($this->connection, $query)) {
             $row =  mysqli_query($this->connection, $query);
             return $row;
@@ -58,7 +58,7 @@ class adminback
     {
         $u_admin_id = $data['admin_update_id'];
         $u_admin_pass = md5($data['admin_update_password']);
-        $query = "UPDATE `admin_info` SET `admin_pass`='$u_admin_pass' WHERE `admin_id`= $u_admin_id";
+        $query = "UPDATE `admin` SET `password`='$u_admin_pass' WHERE `id`= $u_admin_id";
         if (mysqli_query($this->connection, $query)) {
             $update_mag = "You password updated successfull";
             return $update_mag;
@@ -72,7 +72,7 @@ class adminback
         $user_email = $data['user_name'];
         $user_pass = md5($data['user_password']);
         $user_role = $data['user_role'];
-        $query = "INSERT INTO `admin_info`( `admin_email`, `admin_pass`, `role`) VALUES ('$user_email','$user_pass',$user_role)";
+        $query = "INSERT INTO `admin`( `email`, `password`, `role`) VALUES ('$user_email','$user_pass',$user_role)";
         if (mysqli_query($this->connection, $query)) {
             $msg = "{$user_email} add as a user successfully";
             return $msg;
@@ -81,7 +81,7 @@ class adminback
 
     function show_admin_user()
     {
-        $query = "SELECT * FROM `admin_info`";
+        $query = "SELECT * FROM `admin`";
         if (mysqli_query($this->connection, $query)) {
             $result = mysqli_query($this->connection, $query);
             return $result;
@@ -90,7 +90,7 @@ class adminback
 
     function show_admin_user_by_id($user_id)
     {
-        $query = "SELECT * FROM `admin_info` WHERE `admin_id`=$user_id";
+        $query = "SELECT * FROM `admin` WHERE `id`=$user_id";
         if (mysqli_query($this->connection, $query)) {
             $result = mysqli_query($this->connection, $query);
             return $result;
@@ -102,7 +102,7 @@ class adminback
         $u_id = $data['user_id'];
         $u_email = $data['u-user-email'];
         $u_role = $data['u_user_role'];
-        $query = "UPDATE `admin_info` SET `admin_email`='$u_email',`role`= $u_role WHERE `admin_id`= $u_id ";
+        $query = "UPDATE `admin` SET `email`='$u_email',`role`= $u_role WHERE `id`= $u_id ";
         if (mysqli_query($this->connection, $query)) {
             $up_msg = "Udated successfully";
             return $up_msg;
@@ -111,7 +111,7 @@ class adminback
 
     function delete_admin($admin_id)
     {
-        $query = "DELETE FROM `admin_info` WHERE `admin_id`=$admin_id";
+        $query = "DELETE FROM `admin` WHERE `id`=$admin_id";
         if (mysqli_query($this->connection, $query)) {
             $del_msg = "User Deleted Successfully";
             return $del_msg;
@@ -204,7 +204,7 @@ class adminback
         if ($img_ext == "jpg" ||  $img_ext == 'jpeg' || $img_ext == "png") {
             if ($pdt_img_size <= 2e+6) {
 
-                if ($width < 271 && $height < 271) {                   
+                if ($width < 271 && $height < 271) {
                     $query = "INSERT INTO `products`( `pdt_name`, `pdt_price`, `pdt_des`,`product_stock`, `pdt_ctg`, `pdt_img`, `pdt_status`) VALUES ('$pdt_name',$pdt_price,'$pdt_des',$pdt_stock,$pdt_ctg,'$pdt_img_name',$pdt_status)";
                     if (mysqli_query($this->connection, $query)) {
                         move_uploaded_file($pdt_img_tmp, "uploads/" . $pdt_img_name);
@@ -394,7 +394,7 @@ class adminback
                 header("location:userprofile.php");
                 session_start();
                 $_SESSION['user_id'] = $user_info['user_id'];
-                $_SESSION['email'] = $user_info['user_email'];
+                $_SESSION['user_email'] = $user_info['user_email'];
                 $_SESSION['mobile'] = $user_info['user_mobile'];
                 $_SESSION['address'] = $user_info['user_address'];
                 $_SESSION['username'] = $user_info['user_name'];
@@ -408,7 +408,7 @@ class adminback
     function user_logout()
     {
         unset($_SESSION['user_id']);
-        unset($_SESSION['email']);
+        unset($_SESSION['user_email']);
         unset($_SESSION['password']);
         header("location:user_login.php");
         session_destroy();
@@ -575,11 +575,11 @@ class adminback
     {
         $link_id = $data['id'];
         $link_email = $data['email'];
-        $link_tweeter = $data['tweeter'];
+        $link_twitter = $data['twitter'];
         $link_fb = $data['fb'];
         $link_pin = $data['pin'];
         $link_phone = $data['phone'];
-        $query = "UPDATE header_info SET email='$link_email',tweeter='$link_tweeter',fb_link= '$link_fb', pinterest='$link_pin', phone='$link_phone' WHERE id = $link_id";
+        $query = "UPDATE header_info SET email='$link_email',twitter='$link_twitter',fb= '$link_fb', pinterest='$link_pin', phone='$link_phone' WHERE id = $link_id";
         if (mysqli_query($this->connection, $query)) {
             return "Link Update successfully";
         }

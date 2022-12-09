@@ -1,6 +1,5 @@
-
 <?php 
-    $views = "manage-admin";
+    $views = "add-admin";
     include ("template.php");
 
 ?>

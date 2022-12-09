@@ -17,15 +17,16 @@
             </div>
             <a href="index.php">
                 <?php
-                $obj = new adminback();
-                $logo_info = $obj->display_logo();
+                $logoObj = new Logo();
+                $linkObj = new Link();
+                $adminObj = new Admin();
+                $logo_info = $logoObj->displayLogo();
                 $logo = mysqli_fetch_assoc($logo_info);
                 ?>
                 <img class="img-fluid" src="uploads/<?php echo $logo['img']; ?>" alt="Theme-Logo" />
-            </a>
-            <a class="mobile-options">
-                <i class="ti-more"></i>
-            </a>
+                <a class="mobile-options">
+                    <i class="ti-more"></i>
+                </a>
         </div>
 
         <div class="navbar-container container-fluid">
