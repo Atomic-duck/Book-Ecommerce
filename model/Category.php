@@ -16,22 +16,33 @@ class Category extends DB{
        }
    }
 
+   function getCategoryByName($name){
+        $query = "SELECT * FROM category WHERE name='$name'";
+        $result = mysqli_query($this->conn, $query);
+
+        if (mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+    }
+
    function addCategory($data){
-       $name = $data["category"];
+       $name = $data["name"];
        $description = $data["description"];
        $display = $data["display"];
 
-       $query = "INSERT INTO category(name, description, display) VALUES('$name', '$description', $display)";
-
-       if (mysqli_query($this->conn, $query)) {
-           return "Successfully";
+       if($name && $display){
+           $query = "INSERT INTO category(name, description, display) VALUES('$name', '$description', $display)";
+    
+           if (mysqli_query($this->conn, $query)) {
+               return "Successfully";
+           }
+    
+           return "Failed";
        }
-
-       return "Failed";
    }
 
    function updateCategory($data){
-       $name = $data["category"];
+       $name = $data["name"];
        $description = $data["description"];
        $display = $data["display"];
 
@@ -51,6 +62,22 @@ class Category extends DB{
 
        return "Failed";
    }
+
+   function categoryPublished($name){
+        $query = "UPDATE category SET display=1 WHERE name='$name'";
+        if (mysqli_query($this->conn, $query)) {
+            return "Successfully";
+        }
+        return "Failed";
+   }
+
+   function categoryUnpublished($name){
+    $query = "UPDATE category SET display=0 WHERE name='$name'";
+    if (mysqli_query($this->conn, $query)) {
+        return "Successfully";
+    }
+    return "Failed";
+}
 }
 
 ?>

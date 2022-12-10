@@ -2,6 +2,28 @@
 include_once('DB.php');
 
 class Customization extends DB{
+    function display_links(){
+        $query = "SELECT * FROM header_info";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)>0) {
+            $link_datas = array();
+            while($row = mysqli_fetch_assoc($result)){
+                $link_datas[] = $row;
+            }
+
+            return $link_datas;
+        }
+    }
+
+    function display_link_ID($id){
+        $query = "SELECT * FROM header_info WHERE id = $id";
+        $result = mysqli_query($this->conn, $query);
+
+        if (mysqli_num_rows($result)>0) {
+            return mysqli_fetch_assoc($result);
+        }
+    }
+
    function updataLinks($data){
        $link_id = $data['id'];
        $link_email = $data['email'];
@@ -9,7 +31,6 @@ class Customization extends DB{
        $link_fb = $data['fb'];
        $link_pin = $data['pin'];
        $link_phone = $data['phone'];
-
 
        $query = "UPDATE header_info SET email='$link_email',tweeter='$link_tweeter',fb_link= '$link_fb', pinterest='$link_pin', phone='$link_phone' WHERE id = $link_id";
        if (mysqli_query($this->conn, $query)) {
@@ -55,7 +76,7 @@ class Customization extends DB{
        if ($lg_ext == "jpg" ||   $lg_ext == 'jpeg' ||  $lg_ext == "png") {
            if ($lg_size <= 2e+6) {
 
-               if ($width < 110 && $height < 110) {
+               if ($width < 136 && $height < 37) {
 
                    $select_query = "SELECT * FROM `add_logo` WHERE id=$lg_id";
                    $result = mysqli_query($this->conn, $select_query);
@@ -72,7 +93,7 @@ class Customization extends DB{
                        return $msg;
                    }
                }else{
-                   $msg = "Sorry !! Logo max height: 110px and width:110px, but you are trying {$width} px and {$height} px";
+                   $msg = "Sorry !! Logo max height: 135 and width:36px, but you are trying {$width} px and {$height} px";
                    return $msg;
                }
            } else {

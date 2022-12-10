@@ -30,6 +30,17 @@ class Comment extends DB{
        }
    }
 
+   function getCommentById($com_id){
+        $query = "SELECT * FROM comments WHERE id=$com_id";
+        $result = mysqli_query($this->conn, $query);
+        
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+
+            return $row;
+        }
+   }
+
    function postComment($data){
        $customer_id = $data['customer_id'];
        $username = $data['username'];
